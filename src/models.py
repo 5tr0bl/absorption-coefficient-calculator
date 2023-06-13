@@ -23,6 +23,32 @@ class AbsorberModelInterface:
     def calculate_aux_values(self):
         pass
     
+    def get_density_p(self):
+        pass
+    
+    def get_kp(self):
+        pass
+
+    def get_Zp(self):
+        pass
+
+    def set_f(self, new_f):
+        self.f = new_f
+
+# Helmholtz Resonator
+# Acoustic Waves p.131
+class HelmholtzResonator(AbsorberModelInterface):
+    def __init__(self, f, dichte, phi, alpha_unend, sigma, gamma, P0,  viskosität_L,
+                 thermisch_L, Pr, viskosität):
+        super().__init__(f, dichte, phi, alpha_unend, sigma, gamma, P0, viskosität_L,
+                         thermisch_L, Pr, viskosität)
+        
+    def calculate_aux_values(self):
+        pass
+    
+    def get_density_p(self):
+        pass
+    
     def get_kp(self):
         pass
 
@@ -54,18 +80,24 @@ class Porous_Absorber(AbsorberModelInterface):
         self.calculate_aux_values()
     
     def calculate_aux_values(self):
-        self.omega = 2 * np.pi * self.f
-        self.G1 = self.sigma * self.phi / (self.alpha_unend * self.dichte * self.omega)
-        self.G2 = 4*((self.alpha_unend)**2) * self.dichte * self.viskosität * self.omega / ((self.sigma*self.phi*self.viskosität_L)**2)
+        try:
+            self.omega = 2 * np.pi * self.f
+            self.G1 = self.sigma * self.phi / (self.alpha_unend * self.dichte * self.omega)
+            self.G2 = 4*((self.alpha_unend)**2) * self.dichte * self.viskosität * self.omega / ((self.sigma*self.phi*self.viskosität_L)**2)
 
-        self.G1_dot = 8*self.viskosität / (self.dichte * self.Pr * ((self.thermisch_L)**2) * self.omega)
+            self.G1_dot = 8*self.viskosität / (self.dichte * self.Pr * ((self.thermisch_L)**2) * self.omega)
 
-        self.G2_dot = self.dichte * self.Pr * ((self.thermisch_L)**2) * self.omega / (16*self.viskosität)
+            self.G2_dot = self.dichte * self.Pr * ((self.thermisch_L)**2) * self.omega / (16*self.viskosität)
 
-        self.dichte_p = self.dichte * self.alpha_unend * (1- 1j*self.G1*np.sqrt(1+1j*self.G2)) / self.phi
+            self.dichte_p = self.dichte * self.alpha_unend * (1- 1j*self.G1*np.sqrt(1+1j*self.G2)) / self.phi
 
-        self.K_p = self.K0*self.phi**(-1) / (self.gamma - (self.gamma-1)*((1- 1j*self.G1_dot*np.sqrt(1+ 1j*self.G2_dot))**-1))
+            self.K_p = self.K0*self.phi**(-1) / (self.gamma - (self.gamma-1)*((1- 1j*self.G1_dot*np.sqrt(1+ 1j*self.G2_dot))**-1))
+        except ZeroDivisionError:
+            print('bitte richtige Zahl eingeben')
 
+    def get_density_p(self):
+        return self.dichte_p
+    
     def get_kp(self):
         return self.omega * np.sqrt(self.dichte_p/self.K_p)
     

@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import cos, sin, pi, sqrt, abs, dot
 import pandas as pd
 import plotly.graph_objects as go
 import pendulum
@@ -98,22 +99,34 @@ def create_input_field():
 
 # Define the transfer matrix method function
 def tmm(
+        theta: float, # needs to be in radians for internal calculation
+        k0: float,
         k1: float,
         L1: float,
         Z1: float,
         k2: float,
         L2: float,
         Z2: float
-    ) -> None:
+    ) -> np.array:
     
+    ## neue k_pz bei Eingallswinkel theta
+    k_0x = k0*sin(theta)
+    k_1x = k_0x
+    k_2x = k2*sin(theta)
+
+    k_1z = sqrt(k1**2 - k_1x**2)
+    k_2z = sqrt(k2**2 - k_2x**2)
+
     # T1, T2, T3 definieren
-    T1 = np.array([[np.cos(k1*L1), 1j*Z1*np.sin(k1*L1)],
-                   [(1j/Z1)*np.sin(k1*L1), np.cos(k1*L1)]])
 
-    T2 = np.array([[np.cos(k2*L2), 1j*Z2*np.sin(k2*L2)],
-                   [(1j/Z2)*np.sin(k2*L2), np.cos(k2*L2)]])
+    T1 = np.array([[cos(k_1z*L1), 1j*Z1*(k1/k_1z)*sin(k_1z*L1)],
+                   [(1j/Z1)*(k_1z/k1)*sin(k_1z*L1), cos(k_1z*L1)]])
 
-    # Rigid Backed -> das wird erstmal nicht benutzt?
+    T2 = np.array([[cos(k_2z*L2), 1j*Z2*(k2/k_2z)*sin(k_2z*L2)],
+                   [(1j/Z2)*(k_2z/k2)*sin(k_2z*L2), cos(k_2z*L2)]])
+
+
+    # Rigid Backed
     T3 = np.array([[1, 0],  
                    [0, 1]])
 
