@@ -38,7 +38,7 @@ class AbsorptionCoeff:
                     if not T_total[freq_index]:
                         T_total[freq_index] = utils.tmm(self.theta,k0,k1,self.L1,Z1,k2,self.L2,self.impedance)
                     else:
-                        T_total[freq_index] = np.matmul(T_total, utils.tmm(self.theta,k0,k1,self.L1,Z1,k2,self.L2,self.impedance))
+                        T_total[freq_index] = np.matmul(T_total[freq_index], utils.tmm(self.theta,k0,k1,self.L1,Z1,k2,self.L2,self.impedance))
 
                     # Absorptionsgrad berechnen -> gehört das in tmm-fkt?
                     R = (T_total[freq_index][0, 0] - T_total[freq_index][1, 0]*self.impedance) / (T_total[freq_index][0, 0] + T_total[freq_index][1, 0]*self.impedance) # Reflexionskoeffizient

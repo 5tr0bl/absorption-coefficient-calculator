@@ -112,18 +112,20 @@ def tmm(
     ## neue k_pz bei Eingallswinkel theta
     k_0x = k0*sin(theta)
     k_1x = k_0x
-    k_2x = k2*sin(theta)
+    # k_2x = k2*sin(theta)
 
     k_1z = sqrt(k1**2 - k_1x**2)
-    k_2z = sqrt(k2**2 - k_2x**2)
+    # k_2z = sqrt(k2**2 - k_2x**2)
 
     # T1, T2, T3 definieren
 
     T1 = np.array([[cos(k_1z*L1), 1j*Z1*(k1/k_1z)*sin(k_1z*L1)],
                    [(1j/Z1)*(k_1z/k1)*sin(k_1z*L1), cos(k_1z*L1)]])
 
+    '''
     T2 = np.array([[cos(k_2z*L2), 1j*Z2*(k2/k_2z)*sin(k_2z*L2)],
                    [(1j/Z2)*(k_2z/k2)*sin(k_2z*L2), cos(k_2z*L2)]])
+    '''
 
 
     # Rigid Backed

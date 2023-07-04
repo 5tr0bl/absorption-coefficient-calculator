@@ -37,12 +37,18 @@ class AbsorberModelInterface:
 
 # Helmholtz Resonator
 # Acoustic Waves p.131
+# Lossless model Z0=Zn=Zc, k0=kn=kc
+# n = neck, c = cavity
+
 class HelmholtzResonator(AbsorberModelInterface):
+    def __init__(self, l_c, l_n):
+        pass
+    '''
     def __init__(self, f, dichte, phi, alpha_unend, sigma, gamma, P0,  viskosität_L,
                  thermisch_L, Pr, viskosität):
         super().__init__(f, dichte, phi, alpha_unend, sigma, gamma, P0, viskosität_L,
                          thermisch_L, Pr, viskosität)
-        
+    '''    
     def calculate_aux_values(self):
         pass
     
@@ -53,6 +59,9 @@ class HelmholtzResonator(AbsorberModelInterface):
         pass
 
     def get_Zp(self):
+        pass
+
+    def get_res_freq():
         pass
 
     def set_f(self, new_f):
