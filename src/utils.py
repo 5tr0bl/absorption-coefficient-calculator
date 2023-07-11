@@ -5,7 +5,7 @@ import pendulum
 import streamlit as st
 
 # Define a function that converts a dataframe to a CSV file
-@st.cache_data(show_spinner=False)
+# @st.cache_data(show_spinner=False)
 def _convert_df(df: pd.DataFrame):
     return df.to_csv().encode("utf-8")
 
@@ -99,3 +99,68 @@ def plotly_go_line(x,y,x_label,y_label,title):
                     width=1000,
                     height=500)
     return fig
+
+def plotly_freq_bands(x,y,x_label,y_label,title, plot_type='oct'):
+    """Creates a plotly-go bar plot for octave bands.
+
+    Returns:
+        plotly.graph_objects.Figure: Plotly bar plot.
+    """
+    mapped_alphas = dict(zip(x,y))
+
+    center_freqs = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
+    octave_bands = []
+
+    if plot_type == 'oct':
+        bw_factor = 2
+    elif plot_type == 'third':
+        bw_factor = 3
+    else:
+        raise Exception("Invalid Plot Type")
+
+    for center_freq in center_freqs:
+        if center_freq == 31.5:
+            lower_cutoff = 0
+        else:
+            lower_cutoff = center_freq / bw_factor
+        if center_freq == 16000:
+            upper_cutoff = 20000
+        else:
+            upper_cutoff = center_freq * bw_factor
+        
+        octave_band = {
+            "center_frequency": center_freq,
+            "lower_cutoff_frequency": lower_cutoff,
+            "upper_cutoff_frequency": upper_cutoff
+        }
+        
+        octave_bands.append(octave_band)
+    
+    alphas_mean = [] # will hold the mean value for all alphas in each freq band
+    
+    for band in octave_bands:
+        band_y_values = y[(x >= band['lower_cutoff_frequency']) & (x <= band['upper_cutoff_frequency'])]
+        mean_y_value = np.mean(band_y_values) if len(band_y_values) > 0 else 0
+        alphas_mean.append(mean_y_value)
+
+
+    # Create evenly spaced x-axis values for plotting
+    x_ticks = np.arange(len(center_freqs))
+
+    # Create bar plot
+    fig = go.Figure(data=go.Bar(x=x_ticks, y=alphas_mean))
+
+    # Set the x-axis tick positions and labels
+    fig.update_layout(
+        xaxis=dict(
+            tickvals=x_ticks,
+            ticktext=center_freqs,
+            title=x_label
+        ),
+        yaxis=dict(
+            title=y_label
+        ),
+        title=title
+    )
+
+    fig.show()
