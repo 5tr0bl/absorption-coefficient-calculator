@@ -25,8 +25,10 @@ st.header('Globale Parameter :globe_with_meridians:')
 with st.expander('Werte ein/ausblenden...'):
     st.markdown('##### Frequenzbereich')
     col1, col2 = st.columns(2)
-    f_min, f_max = col1.slider('Anfangs- und Endfrequenz [Hz]', 0, 10000, (0, 10000), step=100)
+    f_min, f_max = col1.slider('Anfangs- und Endfrequenz [Hz]', 0, 20000, (0, 10000), step=10)
     f_range = np.arange(f_min, f_max, 1)
+    f_range_full = np.arange(1, 20000, 1)
+    plot_type = col2.selectbox('Plot Type', ('Graph', 'Octave Bands', '1/3 Octave Bands'))
 
     col1, col2, col3 = st.columns(3)
     col1.markdown('##### Lufttemperatur')
@@ -86,7 +88,7 @@ alphas = np.array([])
 
 ################## Computation ##################
 try:
-    for f in f_range:
+    for f in f_range_full:
         kx = 2 * np.pi * f / air_speed * np.sin(theta)
         T = []
 
@@ -115,12 +117,32 @@ except:
 # Plotting
 try:
     st.header('Plot :bar_chart:')
-    fig1 = utils.plotly_go_line(x=f_range,
-                                y=alphas,
-                                x_label='Frequenz in [Hz]',
-                                y_label='Absorptionsgrad',
-                                title="Absorptionsgrad Plot")
-    fig1
+    if plot_type == 'Graph':
+        fig1 = utils.plotly_go_line(x=f_range,
+                                    y=alphas,
+                                    x_label='Frequenz in [Hz]',
+                                    y_label='Absorptionsgrad',
+                                    title="Absorptionsgrad Plot")
+        st.plotly_chart(fig1)
+    elif plot_type == 'Octave Bands':
+        fig1 = utils.plotly_freq_bands(x=f_range_full,
+                                         y=alphas,
+                                         x_label='Frequenz in [Hz]',
+                                         y_label='Absorptionsgrad',
+                                         title="Absorptionsgrad Oktavbänder",
+                                         plot_type="oct")
+        st.write(fig1.to_html(include_plotlyjs='cdn'))
+    elif plot_type == '1/3 Octave Bands':
+        fig1 = utils.plotly_freq_bands(x=f_range_full,
+                                         y=alphas,
+                                         x_label='Frequenz in [Hz]',
+                                         y_label='Absorptionsgrad',
+                                         title="Absorptionsgrad Terzbänder",
+                                         plot_type="third")
+        st.write(fig1.to_html(include_plotlyjs='cdn'))
+    # fig1
+    
+
 
     # DF anzeigen
     col1, col2 = st.columns(2)
