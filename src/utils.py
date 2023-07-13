@@ -106,39 +106,36 @@ def plotly_freq_bands(x,y,x_label,y_label,title, plot_type='oct'):
     Returns:
         plotly.graph_objects.Figure: Plotly bar plot.
     """
-    mapped_alphas = dict(zip(x,y))
-
-    center_freqs = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
-    octave_bands = []
+    # mapped_alphas = dict(zip(x,y))
 
     if plot_type == 'oct':
+        center_freqs = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
         bw_factor = 2
     elif plot_type == 'third':
+        center_freqs = [25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200,
+                        250, 315, 400, 500, 630, 800, 1000, 1250, 1600, 2000,
+                        2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500, 16000, 20000]
         bw_factor = 3
     else:
-        raise Exception("Invalid Plot Type")
+        raise ValueError("Invalid Plot Type")
+
+    freq_bands = []
 
     for center_freq in center_freqs:
-        if center_freq == 31.5:
-            lower_cutoff = 0
-        else:
-            lower_cutoff = center_freq / bw_factor
-        if center_freq == 16000:
-            upper_cutoff = 20000
-        else:
-            upper_cutoff = center_freq * bw_factor
-        
-        octave_band = {
+        lower_cutoff = center_freq / bw_factor
+        upper_cutoff = center_freq * bw_factor
+
+        freq_band = {
             "center_frequency": center_freq,
             "lower_cutoff_frequency": lower_cutoff,
             "upper_cutoff_frequency": upper_cutoff
         }
-        
-        octave_bands.append(octave_band)
+
+        freq_bands.append(freq_band)
     
     alphas_mean = [] # will hold the mean value for all alphas in each freq band
     
-    for band in octave_bands:
+    for band in freq_bands:
         band_y_values = y[(x >= band['lower_cutoff_frequency']) & (x <= band['upper_cutoff_frequency'])]
         mean_y_value = np.mean(band_y_values) if len(band_y_values) > 0 else 0
         alphas_mean.append(mean_y_value)
@@ -158,6 +155,7 @@ def plotly_freq_bands(x,y,x_label,y_label,title, plot_type='oct'):
             title=x_label
         ),
         yaxis=dict(
+            range=[0, 1],
             title=y_label
         ),
         title=title
