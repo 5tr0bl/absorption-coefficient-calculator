@@ -4,16 +4,18 @@ import plotly.graph_objects as go
 import pendulum
 import streamlit as st
 
+
 # Define a function that converts a dataframe to a CSV file
 # @st.cache_data(show_spinner=False)
 def _convert_df(df: pd.DataFrame):
     return df.to_csv().encode("utf-8")
 
+
 # Define a function that creates a download button for a dataframe
 def create_df_export_button(
-    df: pd.DataFrame,
-    title: str,
-    ts: pendulum.DateTime | None,
+        df: pd.DataFrame,
+        title: str,
+        ts: pendulum.DateTime | None,
 ) -> bool:
     """Creates a Streamlit button to export a dataframe to a CSV file.
 
@@ -46,6 +48,7 @@ def create_df_export_button(
         file_name=file_name,
         mime="text/csv",
     )
+
 
 # Define transfer matrix methode
 def tmm(
@@ -83,7 +86,8 @@ def tmm(
 
     return T_total
 
-def plotly_go_line(x,y,x_label,y_label,title):
+
+def plotly_go_line(x, y, x_label, y_label, title):
     """Creates a plotly-go line plot.
 
     Returns:
@@ -93,14 +97,15 @@ def plotly_go_line(x,y,x_label,y_label,title):
     fig.add_trace(go.Scatter(x=x, y=y, mode='lines'))
     fig.update_xaxes(showgrid=True, type="log")
     fig.update_layout(title=title,
-                    xaxis_title=x_label,
-                    yaxis_title=y_label,
-                    yaxis_range=[0, 1],
-                    width=1000,
-                    height=500)
+                      xaxis_title=x_label,
+                      yaxis_title=y_label,
+                      yaxis_range=[0, 1],
+                      width=1000,
+                      height=500)
     return fig
 
-def plotly_freq_bands(x,y,x_label,y_label,title, plot_type='oct'):
+
+def plotly_freq_bands(x, y, x_label, y_label, title, plot_type='oct'):
     """Creates a plotly-go bar plot for octave bands.
 
     Returns:
@@ -132,14 +137,13 @@ def plotly_freq_bands(x,y,x_label,y_label,title, plot_type='oct'):
         }
 
         freq_bands.append(freq_band)
-    
-    alphas_mean = [] # will hold the mean value for all alphas in each freq band
-    
+
+    alphas_mean = []  # will hold the mean value for all alphas in each freq band
+
     for band in freq_bands:
         band_y_values = y[(x >= band['lower_cutoff_frequency']) & (x <= band['upper_cutoff_frequency'])]
         mean_y_value = np.mean(band_y_values) if len(band_y_values) > 0 else 0
         alphas_mean.append(mean_y_value)
-
 
     # Create evenly spaced x-axis values for plotting
     x_ticks = np.arange(len(center_freqs))
@@ -161,4 +165,4 @@ def plotly_freq_bands(x,y,x_label,y_label,title, plot_type='oct'):
         title=title
     )
 
-    fig.show()
+    return fig

@@ -131,7 +131,7 @@ try:
                                          y_label='Absorptionsgrad',
                                          title="Absorptionsgrad Oktavbänder",
                                          plot_type="oct")
-        st.write(fig1.to_html(include_plotlyjs='cdn'))
+        st.plotly_chart(fig1)
     elif plot_type == '1/3 Octave Bands':
         fig1 = utils.plotly_freq_bands(x=f_range_full,
                                          y=alphas,
@@ -139,9 +139,7 @@ try:
                                          y_label='Absorptionsgrad',
                                          title="Absorptionsgrad Terzbänder",
                                          plot_type="third")
-        st.write(fig1.to_html(include_plotlyjs='cdn'))
-    # fig1
-    
+        st.plotly_chart(fig1)
 
 
     # DF anzeigen
