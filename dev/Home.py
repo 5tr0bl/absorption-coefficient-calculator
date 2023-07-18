@@ -56,7 +56,7 @@ utils.create_df_export_button(
 
 
 # Run the app with:
-# streamlit run Home.py --server.enableCORS=false
+# streamlit run Calculator-EN.py --server.enableCORS=false
 
 
 # Define a class that works with three variables and returns a dataframe and a plot

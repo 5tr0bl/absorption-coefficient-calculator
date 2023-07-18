@@ -1,10 +1,14 @@
-site_name: Absorption Coefficient Calculator
+site_name: Absorption Coefficient Calculator Docs
+site url: https://rcroegaert.github.io/absorption-coefficient-calculator-docs/
+repo_url: https://github.com/rcroegaert/absorption-coefficient-calculator
+repo_name: absorption-coefficient-calculator
+
 
 nav:
     - Home: index.md
     - Models: models.md
-    - TMM Calculator: absorptioncoeff.md
-    - Side functions: utils.md
+    - TMM: absorptioncoeff.md
+    - Utility functions: utils.md
 
 
 plugins:

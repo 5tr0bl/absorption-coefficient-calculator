@@ -143,17 +143,12 @@ class Porous_Absorber_JAC(AbsorberModelInterface):
         self.thermal_L = 2 * self.viscosity_L  # simpler formulations
 
         self.G1 = self.sigma * self.phi / (self.alpha_inf * self.air_density * self.omega)
-        self.G2 = 4 * ((self.alpha_inf) ** 2) * self.air_density * self.viscosity * self.omega \
-                  / ((self.sigma * self.phi * self.viscosity_L) ** 2)
+        self.G2 = 4 * ((self.alpha_inf) ** 2) * self.air_density * self.viscosity * self.omega / ((self.sigma * self.phi * self.viscosity_L) ** 2)
 
         self.G1_dot = 8 * self.viscosity / (self.air_density * self.Pr * ((self.thermal_L) ** 2) * self.omega)
         self.G2_dot = self.air_density * self.Pr * ((self.thermal_L) ** 2) * self.omega / (16 * self.viscosity)
         self.density_p = self.air_density * self.alpha_inf * (1 - 1j * self.G1 * np.sqrt(1 + 1j * self.G2)) / self.phi
-        self.Kp = self.K0 * self.phi ** (-1) / (self.gamma - (self.gamma - 1) *
-                                                ((1 - 1j * self.G1_dot * np.sqrt(1 + 1j * self.G2_dot)) ** -1))
-
-    def calculate_aux_values(self):
-        pass
+        self.Kp = self.K0 * self.phi ** (-1) / (self.gamma - (self.gamma - 1) * ((1 - 1j * self.G1_dot * np.sqrt(1 + 1j * self.G2_dot)) ** -1))
 
     def get_k(self):
         k = self.omega * np.sqrt(self.density_p / self.Kp)
